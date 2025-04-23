@@ -144,11 +144,11 @@ void Tetris::_draw() {
 		m_renderer.print(" PhairZ ", {UI_START + 3, 5 }, RC::BLUE, RC::WHITE);
 
 		char buf[8];
-		snprintf(buf, 8, "%7d", m_singles + m_doubles + m_triples + m_quadruples);
+		snprintf(buf, 8, "%7d", m_singles + m_doubles * 2 + m_triples * 3  + m_quadruples * 4);
 		m_renderer.print("Lines:", { UI_START, 8 }, RC::WHITE, RC::CYAN);
 		m_renderer.print(buf, { UI_START + 6, 8 }, RC::BLACK, RC::WHITE);
 
-		snprintf(buf, 8, "%7d", m_singles * 100 + m_doubles * 300 + m_triples * 400 + m_quadruples * 500);
+		snprintf(buf, 8, "%7d", m_singles * 100 + m_doubles * 300 + m_triples * 500 + m_quadruples * 700);
 		m_renderer.print("Score:", { UI_START, 10 }, RC::WHITE, RC::CYAN);
 		m_renderer.print(buf, { UI_START + 6, 10 }, RC::BLACK, RC::WHITE);
 

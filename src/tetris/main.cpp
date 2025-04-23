@@ -1,6 +1,6 @@
 #include "tetris_game.h"
 
 int main() {
-    Tetris game;
-    game.run();
+	Tetris game;
+	game.run();
 }
