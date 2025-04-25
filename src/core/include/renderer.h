@@ -45,16 +45,18 @@ public:
 
 	void clear_screen();
 	void draw_pixel(const Vector2& p_coord, const Color p_fg_color, const Color p_bg_color, const char* p_tex = "  ");
+	void draw_chixel(const Vector2& p_coord, const Color p_fg_color, const Color p_bg_color, const char* p_tex = " ");
 	void render_screen();
 
 	void print(const char* p_str, const Vector2& p_coord = Vector2(), const Color p_fg_color = DEFAULT, const Color p_bg_color = DEFAULT);
+
+	const Vector2 buf_size;
 private:
-	const Vector2 m_buf_size;
 
 	struct Chixel {
 		Color fg = DEFAULT;
 		Color bg = DEFAULT;
-		char c = 'X';
+		char c = 0;
 	};
 	friend std::ostream& operator<<(std::ostream&, const Renderer::Chixel&);
 	std::vector<Chixel> m_display_buf;

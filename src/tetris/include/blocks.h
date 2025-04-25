@@ -21,7 +21,7 @@ public:
     const Renderer::Color color;
     const char* texture;
 
-    static constexpr int VARIATIONS = 7;
+    static constexpr int C_VARIATIONS = 7;
 
     virtual const std::vector<Vector2> get_shape() const {
         return { Vector2() };

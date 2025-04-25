@@ -21,7 +21,7 @@ public:
 class InputEventListener {
 public:
 	virtual ~InputEventListener() = default;
-	virtual void _input_event(InputEvent* p_event) = 0;
+	virtual void _input_event(InputEvent* const p_event) = 0;
 };
 
 class Input {

@@ -58,14 +58,13 @@ void Input::start_input() {
 
 void Input::handle_input() {
 	while (m_reading) {
-		InputEventKey* iek = new InputEventKey();
+		std::unique_ptr<InputEventKey> iek = std::make_unique<InputEventKey>();
 		iek->key = tolower(getch());
 		iek->pressed = true;
 
         if (!m_reading) break;
 		for (auto* listener : m_listeners) {
-			listener->_input_event(iek);
+			listener->_input_event(iek.get());
 		}
-		delete iek;
 	}
 }

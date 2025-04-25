@@ -1,10 +1,25 @@
 #include "renderer.h"
 #include <iostream>
 #include <algorithm>
+#ifdef _WIN32
+#include <io.h>
+#define null_device "NUL"
+#else
+#include <unistd.h>
+#define null_device "/dev/null"
+#endif // _WIN32
 
 Renderer::Renderer(const Vector2& p_display_size) :
-	m_buf_size(p_display_size),
+	buf_size(p_display_size),
 	m_display_buf(std::vector<Chixel>(p_display_size.x * p_display_size.y)) {
+
+    FILE* nullFile = fopen(null_device, "w");
+    if (nullFile) {
+        fflush(stderr);
+        dup2(fileno(nullFile), fileno(stderr));
+        fclose(nullFile);
+    }
+	
     std::cout << "\033[?25l"; // Hide Cursor.
 	std::cout << "\033[=7h"; // Disable line wrapping.
 	std::cout << "\033[=1049h"; // Enable Alternate Buffer.
@@ -20,7 +35,7 @@ Renderer::~Renderer(){
 }
 
 void Renderer::draw_pixel(const Vector2& p_pos, const Color p_fg_color, const Color p_bg_color, const char* p_tex) {
-	Chixel* ch = m_display_buf.data() + ((p_pos.x * 2) + m_buf_size.x * p_pos.y);
+	Chixel* ch = m_display_buf.data() + ((p_pos.x * 2) + buf_size.x * p_pos.y);
 	if (ch) {
 		if (p_fg_color != DEFAULT) {
 			ch->fg = p_fg_color;
@@ -45,10 +60,25 @@ void Renderer::draw_pixel(const Vector2& p_pos, const Color p_fg_color, const Co
 	}
 }
 
+void Renderer::draw_chixel(const Vector2& p_pos, const Color p_fg_color, const Color p_bg_color, const char* p_tex) {
+	Chixel* ch = m_display_buf.data() + (p_pos.x + buf_size.x * p_pos.y);
+	if (ch) {
+		if (p_fg_color != DEFAULT) {
+			ch->fg = p_fg_color;
+		}
+		if (p_bg_color != DEFAULT) {
+			ch->bg = p_bg_color;
+		}
+		if (p_tex[0]) {
+			ch->c = p_tex[0];
+		}
+	}
+}
+
 void Renderer::print(const char* p_str, const Vector2& p_pos, const Color p_fg_color, const Color p_bg_color) {
-	Chixel* ch = m_display_buf.data() + (p_pos.x + m_buf_size.x * p_pos.y);
+	Chixel* ch = m_display_buf.data() + (p_pos.x + buf_size.x * p_pos.y);
 	for (int i = 0; p_str[i]; i++) {
-		if (i + p_pos.x > m_buf_size.x - 1) break;
+		if (i + p_pos.x > buf_size.x - 1) break;
 
 		if (p_fg_color != DEFAULT) {
 			ch[i].fg = p_fg_color;
@@ -68,9 +98,9 @@ void move_cursor(int x, int y) {
 
 void Renderer::render_screen() {
 	std::cout << "\033[H";
-	for (int y = 0; y < m_buf_size.y; y++) {
-		for (int x = 0; x < m_buf_size.x; x++) {
-			std::cout << m_display_buf[x + m_buf_size.x * y];
+	for (int y = 0; y < buf_size.y; y++) {
+		for (int x = 0; x < buf_size.x; x++) {
+			std::cout << m_display_buf[x + buf_size.x * y];
 		}
 		std::cout << std::endl;
 	}

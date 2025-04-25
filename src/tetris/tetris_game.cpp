@@ -9,7 +9,7 @@ void Tetris::spawn_block(const Vector2& p_pos) {
 	std::random_device rd;
 	std::default_random_engine gen(rd());
 	
-	std::uniform_int_distribution<> dist(1, Block::VARIATIONS);
+	std::uniform_int_distribution<> dist(1, Block::C_VARIATIONS);
 
 	switch (dist(gen)) {
 	case 1:
@@ -46,9 +46,9 @@ void Tetris::spawn_block(const Vector2& p_pos) {
 void Tetris::_init() {
 	spawn_block();
 
-	for (int y = 0; y <= Level::lvl_size_y; y++) {
-		for (int x = 0; x <= Level::lvl_size_x; x++) {
-			if (x == 0 || y == Level::lvl_size_y || x == Level::lvl_size_x) {
+	for (int y = 0; y <= Level::LVL_SIZE_Y; y++) {
+		for (int x = 0; x <= Level::LVL_SIZE_X; x++) {
+			if (x == 0 || y == Level::LVL_SIZE_Y || x == Level::LVL_SIZE_X) {
 				Level::get_singleton().set_cell({ x, y }, { Renderer::CYAN } );
 			} else {
 				Level::get_singleton().set_cell({ x, y }, { Renderer::EMPTY_COLOR });
@@ -57,7 +57,7 @@ void Tetris::_init() {
 	}
 }
 
-void Tetris::_input_event(InputEvent* p_event) {
+void Tetris::_input_event(InputEvent* const p_event) {
 	if (auto iek = dynamic_cast<InputEventKey*>(p_event)) {
 		switch (iek->key) {
 		case 'w':
@@ -93,7 +93,7 @@ void Tetris::_update(double p_delta) {
 	if (ticks > 10.0) {
 		ticks = 0;
 		if (curr_block->move({ 0, 1 }) == -1) {
-			if (Level::get_singleton().get_cell(S_SPAWN_POS).color != Renderer::EMPTY_COLOR) {
+			if (Level::get_singleton().get_cell(C_SPAWN_POS).color != Renderer::EMPTY_COLOR) {
 				m_running = false;
 				return;
 			}
@@ -118,8 +118,8 @@ void Tetris::_update(double p_delta) {
 void Tetris::_draw() {
 	// Level
 	{
-		for (int y = 0; y <= Level::lvl_size_y; y++) {
-			for (int x = 0; x <= Level::lvl_size_x; x++) {
+		for (int y = 0; y <= Level::LVL_SIZE_Y; y++) {
+			for (int x = 0; x <= Level::LVL_SIZE_X; x++) {
 				auto cell = Level::get_singleton().get_cell({ x, y });
 				m_renderer.draw_pixel({ x, y }, Renderer::EMPTY_COLOR, cell.color, cell.texture);
 			}
@@ -128,9 +128,9 @@ void Tetris::_draw() {
 
 	// UI
 	{
-		const int UI_START = (Level::lvl_size_x + 1) * 2;
+		const int UI_START = (Level::LVL_SIZE_X + 1) * 2;
 		const int UI_WIDTH = 7;
-		for (int y = 0; y <= Level::lvl_size_y; y++) {
+		for (int y = 0; y <= Level::LVL_SIZE_Y; y++) {
 			for (int x = UI_START / 2; x < UI_START / 2 + UI_WIDTH; x++) {
 				m_renderer.draw_pixel({ x, y }, Renderer::EMPTY_COLOR, Renderer::CYAN);
 			}
